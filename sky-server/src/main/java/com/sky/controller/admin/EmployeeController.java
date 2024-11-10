@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.parser.Entity;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -110,6 +111,30 @@ public class EmployeeController {
     @ApiOperation("变更员工状态")
     public Result chStatus(@PathVariable Integer status,Long id) {
         employeeService.chStatus(status,id);
+        return Result.success();
+    }
+
+    /**
+     * 根据id查询员工信息
+     * @param id
+     * @return
+     */
+    @ApiOperation("根据id查询员工")
+    @GetMapping("/{id}")
+    public Result<Employee> getEmployeeById(@PathVariable Long id) {
+        Employee employee = employeeService.getEmpById(id);
+        return Result.success(employee);
+    }
+
+    /**
+     * 修改员工信息
+     * @param employeeDTO
+     * @return
+     */
+    @PutMapping
+    @ApiOperation("修改员工信息")
+    public Result updateEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        employeeService.updateEmp(employeeDTO);
         return Result.success();
     }
 }

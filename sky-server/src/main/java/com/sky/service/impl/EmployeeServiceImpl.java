@@ -2,6 +2,7 @@ package com.sky.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.sky.annotation.AutoFill;
 import com.sky.constant.MessageConstant;
 import com.sky.constant.PasswordConstant;
 import com.sky.constant.StatusConstant;
@@ -10,6 +11,7 @@ import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
+import com.sky.enumeration.OperationType;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
 import com.sky.exception.PasswordErrorException;
@@ -69,7 +71,6 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 新增员工
      * @param employeeDTO
      */
-    @Override
     public void addNewEmployee(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
         //对象属性深拷贝
@@ -77,12 +78,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         //设置其他实体类属性 账号状态、密码、创建及更新时间、创建人等
         employee.setStatus(StatusConstant.ENABLE);
         employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
-        employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
+//        employee.setCreateTime(LocalDateTime.now());
+//        employee.setUpdateTime(LocalDateTime.now());
         // 这里用ThreadLocal来获取当前操作的用户id，类似与Go中的context，不同的是这里的ThreadLocal本身被当作了一种变量去传递，它是一个变量
         //但是Go中是可以设置多个键值对进行存取多个变量值
-        employee.setCreateUser(BaseContext.getCurrentId());
-        employee.setUpdateUser(BaseContext.getCurrentId());
+//        employee.setCreateUser(BaseContext.getCurrentId());
+//        employee.setUpdateUser(BaseContext.getCurrentId());
 
         employeeMapper.insertEmployee(employee);
     }
@@ -105,6 +106,29 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void chStatus(Integer status, Long id) {
         employeeMapper.updateStatus(status,id,LocalDateTime.now());
+    }
+
+    /**
+     * 根据id查询员工信息
+     * @param id
+     * @return
+     */
+    @Override
+    public Employee getEmpById(Long id) {
+        Employee emp = employeeMapper.getEmpById(id);
+        return emp;
+    }
+
+    /**
+     * 修改员工信息
+     * @param employeeDTO
+     */
+    public void updateEmp(EmployeeDTO employeeDTO) {
+        Employee emp = new Employee();
+        BeanUtils.copyProperties(employeeDTO, emp);
+//        emp.setUpdateTime(LocalDateTime.now());
+//        emp.setUpdateUser(BaseContext.getCurrentId());
+        employeeMapper.updateEmp(emp);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.sky.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +23,7 @@ public class Employee implements Serializable {
     private String username;
 
     private String name;
-
+    @JsonIgnore
     private String password;
 
     private String phone;
