@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/admin/setmeal")
@@ -64,6 +65,6 @@ public class SetMealController {
     @GetMapping("/{id}")
     public Result<SetmealVO> get(@PathVariable Long id){
         SetmealVO setmealVO = setMealService.getById(id);
-        return Result.success();
+        return Result.success(setmealVO);
     }
 }
