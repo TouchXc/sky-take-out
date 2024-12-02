@@ -1,6 +1,7 @@
 package com.sky.controller.admin;
 
 
+import com.sky.constant.RedisKeyConstant;
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
@@ -12,9 +13,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/admin/dish")
@@ -24,12 +27,15 @@ public class DishController {
 
     @Autowired
     private DishService dishService;
-
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @PostMapping
     @ApiOperation("新增菜品")
     public Result<String> save(@RequestBody DishDTO dishDTO) {
         dishService.saveWithFlavor(dishDTO);
+        //清理缓存
+        clearDishCache();
         return Result.success();
     }
 
@@ -58,6 +64,7 @@ public class DishController {
     @PutMapping
     public Result<String> updateDish(@RequestBody DishDTO dishDTO) {
         dishService.update(dishDTO);
+        clearDishCache();
         return Result.success();
     }
 
@@ -71,6 +78,12 @@ public class DishController {
     @DeleteMapping
     public Result<String> deleteDishByIds(@RequestParam List<Long> ids) {
         dishService.deleteBatch(ids);
+        clearDishCache();
         return Result.success();
+    }
+
+    void clearDishCache(){
+        Set keys = redisTemplate.keys(RedisKeyConstant.DISH_PREFIX + "*");
+        redisTemplate.delete(keys);
     }
 }
