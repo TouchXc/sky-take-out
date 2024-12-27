@@ -21,6 +21,9 @@
             <if test="status != null">
                 status = #{status},
             </if>
+            <if test="rejectReason != null">
+                reject_reason = #{rejectionReason},
+            </if>
             <if test="cancelReason != null">
                 cancel_reason = #{cancelReason},
             </if>
